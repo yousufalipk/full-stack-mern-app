@@ -44,16 +44,26 @@ const SignUpForm = (props) => {
         });
 
         if (response.data.status === "success") {
-          try {
-            localStorage.setItem('email', values.email);
-            setTimeout(() => {
-              toast.success("Account Created! Succesfully!");
-            }, 2000);
-            props.setAuth(true);
-            navigate('/admin');
-          } catch (error) {
-            console.log(error);
-            toast.error('Internal Server Error!');
+          if(props.toggle){
+            navigate('/manage-users')
+            toast.success("User Added Successfuly!")
+          }
+          else{
+            try {
+              const username = `${response.data.user.fname} ${response.data.user.lname}`
+              localStorage.setItem('email', values.email);
+              localStorage.setItem('userId', response.data.user._id);
+              localStorage.setItem('username', username);
+              setTimeout(() => {
+                toast.success("Account Created! Succesfully!");
+              }, 2000);
+              props.setAuth(true);
+              props.setUserType(response.data.user.userType);
+              navigate('/admin');
+            } catch (error) {
+              console.log(error);
+              toast.error('Internal Server Error!');
+            }
           }
         } else {
           toast.error(response.data.message);
@@ -66,10 +76,41 @@ const SignUpForm = (props) => {
     }
   });
 
+  const handleBack = () => {
+    navigate('/manage-users')
+  }
+
   return (
     <div>
-      <h3 className='text-2xl font-bold mx-2'>Welcome!</h3>
-      <h2 className='text-2xl mx-2'>Create Your New Account</h2>
+      {!props.toggle ? (
+        <>
+          <h3 className='text-2xl font-bold mx-2'>Welcome!</h3>
+          <h2 className='text-2xl mx-2'>Create Your New Account</h2>
+        </>
+      ) : (
+        <>
+          <div className='flex flex-row justify-between'>
+            <h1 className='font-bold text-left mx-10 w-full max-w-2xl'>
+              Add User
+            </h1>
+            <div className='w-2/4 max-10 flex flex-row justify-end'>
+              <button
+                className='mx-2 bg-red-500 py-1 px-4 rounded-md text-white hover:text-black'
+                onClick={handleBack}
+              >
+                Back
+              </button>
+              <button
+                className='mx-2 bg-bluebtn py-1 px-4 rounded-md text-white hover:text-gray-600'
+                onClick={formik.handleSubmit}
+              >
+                Create
+              </button>
+            </div>
+          </div>
+          <hr className='my-5 border-1 border-[black] mx-2' />
+        </>
+      )}
       <form onSubmit={formik.handleSubmit} className='flex flex-col'>
         <input className='p-3 mx-2 my-3 border-2 rounded-xl'
           type='text'
@@ -84,7 +125,7 @@ const SignUpForm = (props) => {
         {formik.touched.fname && formik.errors.fname ? (
           <div className='text-red-600 text-center'>{formik.errors.fname}</div>
         ) : null}
-        
+
         <input className='p-3 mx-2 my-3 border-2 rounded-xl'
           type='text'
           id='lname'
@@ -140,10 +181,11 @@ const SignUpForm = (props) => {
         {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
           <div className='text-red-600 text-center'>{formik.errors.confirmPassword}</div>
         ) : null}
-
-        <button type='submit' className='bg-bluebtn w-36 p-3 mx-2 my-1 rounded-md text-white'>
-          Create Account
-        </button>
+        {!props.toggle &&(
+          <button type='submit' className='bg-bluebtn w-36 p-3 mx-2 my-1 rounded-md text-white'>
+            Create Account
+          </button>
+        )}
       </form>
     </div>
   );

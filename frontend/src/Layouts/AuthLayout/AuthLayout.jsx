@@ -23,8 +23,8 @@ const AuthLayout = (props) => {
         </div>
         <div>
           <Routes>
-            <Route path="*" element={<LoginPage setAuth={props.setAuth} />} />
-            <Route path="/register" element={<SignUpPage setAuth={props.setAuth} />} />
+            <Route path="*" element={<LoginPage setAuth={props.setAuth} setUserType={props.setUserType} />} />
+            <Route path="/register" element={<SignUpPage setAuth={props.setAuth} toggle={false} setUserType={props.setUserType} />} />
           </Routes>
         </div>
       </div>

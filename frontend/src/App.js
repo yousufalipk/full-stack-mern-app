@@ -4,7 +4,6 @@ import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 import Loader from './Components/Loader/Loader';
 
@@ -16,6 +15,8 @@ import ProtectedRoute from './Components/Protected/Protected';
 
 function App() {
   const [isAuth, setAuth] = useState(false);
+  const [userType, setUserType] = useState(false);
+
   const [loading, setLoading] = useState(true); 
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -54,13 +55,13 @@ function App() {
       <Routes>
         {!isAuth ? (
           <>
-            <Route path="/auth/log-in" element={<AuthLayout setAuth={setAuth} />} />
-            <Route path="*" element={<AuthLayout setAuth={setAuth} />} />
+            <Route path="/auth/log-in" element={<AuthLayout setAuth={setAuth} setUserType={setUserType}/>} />
+            <Route path="*" element={<AuthLayout setAuth={setAuth} setUserType={setUserType}/>} />
           </>
         ) : (
           <>
-            <Route path="/admin" element={<ProtectedRoute isAuth={isAuth}><AdminLayout setAuth={setAuth} /></ProtectedRoute>} />
-            <Route path="*" element={<ProtectedRoute isAuth={isAuth}><AdminLayout setAuth={setAuth} /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute isAuth={isAuth}><AdminLayout setAuth={setAuth} userType={userType} /></ProtectedRoute>} />
+            <Route path="*" element={<ProtectedRoute isAuth={isAuth}><AdminLayout setAuth={setAuth} userType={userType} /></ProtectedRoute>} />
           </>
         )}
       </Routes>

@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const SideBar = (props) => {
+  const username = localStorage.getItem('username');
 
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -50,11 +51,22 @@ const SideBar = (props) => {
 
           {/* Menu*/}
           <div className='flex flex-col mt-4 w-full'>
-            <Link className='w-full py-5 px-10' to='/'>Home</Link>
+            <div className='w-1/2 mx-auto text-center'>
+              Welcome Back!
+              <p className='text-bluebtn mb-8'>{username}</p>
+            </div>
+            <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/'>Dashboard</Link>
             <hr className='border-1 border-[gray] w-4/5 mx-auto'/>
-            <Link className='w-full py-5 px-10' to='/about'>About</Link>
-            <hr className='border-1 border-[gray] w-4/5 mx-auto'/>
-            <Link className='w-full py-5 px-10' to='/users'>Users</Link>
+
+            {props.userType === 'admin' ? (
+              <>
+                <Link className='w-full py-5 px-10 hover:text-bluebtn' to='/manage-users' >Manage Users</Link>
+              </>
+            ):(
+              <>
+              
+              </>
+            )}
             <hr className='border-1 border-[gray] w-4/5 mx-auto'/>
           </div>
         </div>

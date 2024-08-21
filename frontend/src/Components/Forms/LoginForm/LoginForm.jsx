@@ -31,11 +31,12 @@ const LoginForm = (props) => {
                     withCredentials: true
                 });
 
-
+                const username = `${response.data.user.fname} ${response.data.user.lname}`
                 if (response.data.status === "success") {
                     localStorage.setItem('userId', response.data.user._id);
-                    localStorage.setItem('username', response.data.user.username);
+                    localStorage.setItem('username', username);
                     toast.success('Log In Successful!');
+                    props.setUserType(response.data.user.userType);
                     props.setAuth(true);
                     navigate('/admin');
                 } else {

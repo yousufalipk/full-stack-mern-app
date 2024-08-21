@@ -9,7 +9,7 @@ const LoginPage = (props) => {
     <>
         <div className='p-10'>
             {/* Login Form  */}
-            <LoginForm setAuth={props.setAuth} />
+            <LoginForm setAuth={props.setAuth} setUserType={props.setUserType} />
             <p className='text-bluebtn pl-4'>
               <Link to="/register"> Create an account</Link>
             </p>

@@ -32,7 +32,8 @@ exports.createUser = async (req, res) => {
             fname: fname,
             lname: lname,
             email: email,
-            password: hashedPassword
+            password: hashedPassword,
+            userType: 'user'
         })
 
         // Token Generation 
@@ -274,5 +275,80 @@ exports.refresh = async (req, res) => {
             status: 'failed',
             message: 'Internal Server Error'
         });
+    }
+}
+
+exports.fetchUsers = async (req, res) => {
+    try{
+        const users = await UserModel.find({ userType: { $ne: 'admin' }});
+        if(!users){
+            return res.status(200).json({
+                status: 'failed',
+                message: 'No Users found!'
+            })
+        }
+        return res.status(200).json({
+            status: 'success',
+            message: 'Users Fetched Succesfuly!',
+            users: users
+        })
+    }catch(error){
+        console.log("Error", error);
+        return res.status(200).json({
+            status: 'failed',
+            message: 'Internal Server Error!'
+        })
+    }
+}
+
+exports.deleteUser = async (req,res) => {
+    try{
+        const { userId } = req.body;
+        const user = await UserModel.findById(userId);
+        if(!user){
+            return res.status(200).json({
+                status: 'failed',
+                message: 'User not found!'
+            })
+        }
+
+        await user.deleteOne();
+
+        return res.status(200).json({
+            status: 'success',
+            message: 'User removed Succesfuly!'
+        })
+
+    }catch(error){
+        console.log("Error", error);
+        return res.status(200).json({
+            status: 'failed',
+            message: 'Internal Server Error'
+        })
+    }
+}
+
+exports.updateUser = async (req,res) => {
+    try{
+        const {fname, lname, userId } = req.body;
+        const user = await UserModel.findById(userId);
+        if(!user){
+            return res.status(200).json({
+                status: 'failed',
+                message: 'User not found!'
+            })
+        }
+        
+        await UserModel.updateOne({_id: user._id} , {$set: {fname, lname}});
+        return res.status(200).json({
+            status: 'Success',
+            message: 'Info Updated Succesfuly!'
+        })
+    }catch(error){
+        console.log("Error", error);
+        return res.status(200).json({
+            status: 'failed', 
+            message: 'Internal Server Error'
+        })
     }
 }
